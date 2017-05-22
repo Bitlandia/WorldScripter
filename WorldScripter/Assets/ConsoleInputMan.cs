@@ -17,6 +17,7 @@ public class ConsoleInputMan : MonoBehaviour {
     public GameObject ScrollViewToUpdate;
     public GameObject PlayerToUpdate;
     public GameObject TextboxToUpdate;
+    public GameObject CameraFPS;
     public string PathToWSFolder;
     public string PathToTextureFolder;
     public string PathToScriptFolder;
@@ -254,7 +255,7 @@ public class ConsoleInputMan : MonoBehaviour {
     [Command("run")]
     public void Run(string[] Args)
     {
-        try
+        //try
         {
             string Line;
             string FileName = PathToScriptFolder + "/"; //incase you have spaces
@@ -274,7 +275,7 @@ public class ConsoleInputMan : MonoBehaviour {
                     Debug.Log(Line);
                     if (Line != null)
                     {
-                        if(!Line.StartsWith("name"))  //Ignore the meta data line
+                        if (!Line.StartsWith("name") | !Line.StartsWith("//"))  //Ignore the meta data line
                         {
                             ParseCommand(Line);
                             Debug.Log(Line);
@@ -286,9 +287,9 @@ public class ConsoleInputMan : MonoBehaviour {
                 SendMSG("Done loading script.");
             }
         }
-        catch
+        //catch
         {
-            SendMSG("Unexpected error");
+            //SendMSG("Unexpected error");
         }
     }
     [Command("rotate")]
@@ -419,6 +420,35 @@ public class ConsoleInputMan : MonoBehaviour {
             Destroy(Obj);
         }
         SendMSG("Cleared all objects");
+    }
+    [Command("create_raycast")]
+    public void CreateRaycast(string[] Args)
+    {
+        RaycastHit hit;
+        Transform Cam = CameraFPS.transform;
+        var Ray = new Ray(Cam.position, Cam.forward);
+        if (Physics.Raycast(Ray, out hit, 500f))
+        {
+            //Debug.Log(hit.distance); //debug code, uncomment if something breaks
+            Debug.Log(hit.point.x + " " + hit.point.y + " " + hit.point.z);
+            float y = hit.point.y;
+            if (Args[1].Contains(".obj"))
+                ParseCommand("create " + Args[1] + " " + hit.point.x + " " + y + " " + hit.point.z + " " + Args[2] + " " + Args[3] + " " + Args[4] + " " + Args[5] + " " + Args[6]);
+            else
+                ParseCommand("create " + Args[1] + " " + hit.point.x + " " + y + " " + hit.point.z + " " + Args[2] + " " + Args[3] + " " + Args[4]);
+            StartCoroutine(Unclip(Args[1]));
+        }
+    }
+
+    IEnumerator Unclip(string Find)
+    {
+        yield return new WaitForSeconds(0.05f);
+        GameObject ToComp = GameObject.Find(Find);
+        Rigidbody ToRigid = ToComp.AddComponent<Rigidbody>();
+        ToRigid.isKinematic = true;
+        yield return new WaitForSeconds(0.01f);
+        ToRigid.isKinematic = false;
+        Destroy(ToRigid);
     }
 
     public string GetName(string FileName)
