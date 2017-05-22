@@ -60,7 +60,8 @@ public class ConsoleInputMan : MonoBehaviour {
             Directory.CreateDirectory(PathToAudioFolder);
         //Initiate Console
         Text TextUPDComp = TextToUpdate.GetComponent<Text>();
-        TextUPDComp.text = "WorldScripter 0.1a - (C) william341 2017";
+        TextUPDComp.text = "WorldScripter 0.1a - (C) Bitlandia Studios 2017";
+        SendMSG("For more information see the Credits tab.");
         SendMSG("For help see https://pastebin.com/W23TTcvi.");
         PanelToUpdate.SetActive(false);
     }
@@ -387,6 +388,13 @@ public class ConsoleInputMan : MonoBehaviour {
         GameObject ToComp = GameObject.Find(Args[1]);
         System.Type ToRemove = ConsoleUtils.FindType(Args[2], false, true);
         Destroy(ToComp.GetComponent(ToRemove));
+    }
+    [Command("del_sound")]
+    public void DelSound(string[] Args)
+    {
+        GameObject ToSound = GameObject.Find(Args[1]);
+        Destroy(ToSound.GetComponent<AudioHandler>());
+        Destroy(ToSound.GetComponent<AudioSource>());
     }
     [Command("del_texture")]
     public void DelTexture(string[] Args)
