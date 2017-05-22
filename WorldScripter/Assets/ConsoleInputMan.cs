@@ -62,7 +62,7 @@ public class ConsoleInputMan : MonoBehaviour {
         Text TextUPDComp = TextToUpdate.GetComponent<Text>();
         TextUPDComp.text = "WorldScripter 0.1a - (C) Bitlandia Studios 2017";
         SendMSG("For more information see the Credits tab.");
-        SendMSG("For help see https://pastebin.com/W23TTcvi.");
+        SendMSG("For help see https://github.com/Bitlandia/WorldScripter/wiki.");
         PanelToUpdate.SetActive(false);
     }
 
