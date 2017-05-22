@@ -93,7 +93,6 @@ public class ConsoleInputMan : MonoBehaviour {
     public void SendMSG(string Out)
     {
         Text TextUPDComp = TextToUpdate.GetComponent<Text>();
-        RectTransform TextUPDRect = TextToUpdate.GetComponent<RectTransform>();
         ScrollRect ScrollUPDComp = ScrollViewToUpdate.GetComponent<ScrollRect>();
         //Update Text
         string CurrText = TextUPDComp.text;
