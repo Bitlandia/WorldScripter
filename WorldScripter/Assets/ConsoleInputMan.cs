@@ -218,9 +218,16 @@ public class ConsoleInputMan : MonoBehaviour {
     {
         try
         {
-            //Try to set the color
-            GameObject.Find(Args[1]).GetComponent<Renderer>().material.color = new Color32(byte.Parse(Args[2]), byte.Parse(Args[3]), byte.Parse(Args[3]), byte.Parse(Args[3]));
-            SendMSG("Changed color of " + Args[1] + " to " + Args[2] + ", " + Args[3] + ", " + Args[4] + ".");
+            GameObject[] Objs;
+            Objs = GameObject.FindGameObjectsWithTag("ConsoleCreated");
+            foreach (GameObject Obj in Objs)
+            {
+                if (Obj.name == Args[1])
+                {
+                    Obj.GetComponent<Renderer>().material.color = new Color32(byte.Parse(Args[2]), byte.Parse(Args[3]), byte.Parse(Args[3]), byte.Parse(Args[3]));
+                    SendMSG("Changed color of " + Args[1] + " to " + Args[2] + ", " + Args[3] + ", " + Args[4] + ".");
+                }
+            }
         }
        catch { SendMSG("Unexpected error"); }
     }
@@ -229,9 +236,16 @@ public class ConsoleInputMan : MonoBehaviour {
     {
         try
         {
-            GameObject ToDestroy = GameObject.Find(Args[1]);
-            GameObject.Destroy(ToDestroy);
-            SendMSG("Destroyed " + Args[1] + ".");
+            GameObject[] Objs;
+            Objs = GameObject.FindGameObjectsWithTag("ConsoleCreated");
+            foreach (GameObject Obj in Objs)
+            {
+                if (Obj.name == Args[1])
+                {
+                    GameObject.Destroy(Obj);
+                    SendMSG("Destroyed " + Args[1] + ".");
+                }
+            }
         }
         catch { SendMSG("Unexpected error"); }
     }
@@ -240,9 +254,16 @@ public class ConsoleInputMan : MonoBehaviour {
     {
         try
         {
-            GameObject ToMove = GameObject.Find(Args[1]);
-            ToMove.transform.position = new Vector3(float.Parse(Args[2]), float.Parse(Args[3]), float.Parse(Args[4]));
-            SendMSG("Moved " + Args[1] + " to " + Args[2] + ", " + Args[3] + ", " + Args[4] + ".");
+            GameObject[] Objs;
+            Objs = GameObject.FindGameObjectsWithTag("ConsoleCreated");
+            foreach (GameObject Obj in Objs)
+            {
+                if (Obj.name == Args[1])
+                {
+                    Obj.transform.position = new Vector3(float.Parse(Args[2]), float.Parse(Args[3]), float.Parse(Args[4]));
+                    SendMSG("Moved " + Args[1] + " to " + Args[2] + ", " + Args[3] + ", " + Args[4] + ".");
+                }
+            }
         }
         catch { SendMSG("Unexpected error"); }
     }
@@ -307,9 +328,16 @@ public class ConsoleInputMan : MonoBehaviour {
     {
         try
         {
-            GameObject ToRotate = GameObject.Find(Args[1]);
-            ToRotate.transform.rotation = new Quaternion(int.Parse(Args[2]), int.Parse(Args[3]), int.Parse(Args[4]), int.Parse(Args[5]));
-            SendMSG("Rotated " + Args[1] + " to " + Args[2] + ", " + Args[3] + ", " + Args[4] + ", " + Args[5] + ".");
+            GameObject[] Objs;
+            Objs = GameObject.FindGameObjectsWithTag("ConsoleCreated");
+            foreach (GameObject Obj in Objs)
+            {
+                if (Obj.name == Args[1])
+                {
+                    Obj.transform.rotation = new Quaternion(int.Parse(Args[2]), int.Parse(Args[3]), int.Parse(Args[4]), int.Parse(Args[5]));
+                    SendMSG("Rotated " + Args[1] + " to " + Args[2] + ", " + Args[3] + ", " + Args[4] + ", " + Args[5] + ".");
+                }
+            }
         }
         catch { SendMSG("Unexpected error"); }
     }
@@ -318,9 +346,16 @@ public class ConsoleInputMan : MonoBehaviour {
     {
         try
         {
-            GameObject ToScale = GameObject.Find(Args[1]);
-            ToScale.transform.localScale = new Vector3(float.Parse(Args[2]), float.Parse(Args[3]), float.Parse(Args[5]));
-            SendMSG("Scaled " + Args[1] + " to " + Args[2] + ", " + Args[3] + ", " + Args[4] + ".");
+            GameObject[] Objs;
+            Objs = GameObject.FindGameObjectsWithTag("ConsoleCreated");
+            foreach (GameObject Obj in Objs)
+            {
+                if (Obj.name == Args[1])
+                {
+                    Obj.transform.localScale = new Vector3(float.Parse(Args[2]), float.Parse(Args[3]), float.Parse(Args[5]));
+                    SendMSG("Scaled " + Args[1] + " to " + Args[2] + ", " + Args[3] + ", " + Args[4] + ".");
+                }
+            }
         }
         catch { SendMSG("Unexpected error"); }
     }
@@ -395,16 +430,30 @@ public class ConsoleInputMan : MonoBehaviour {
     [Command("del_comp")]
     public void DelComp(string[] Args)
     {
-        GameObject ToComp = GameObject.Find(Args[1]);
-        System.Type ToRemove = ConsoleUtils.FindType(Args[2], false, true);
-        Destroy(ToComp.GetComponent(ToRemove));
+        GameObject[] Objs;
+        Objs = GameObject.FindGameObjectsWithTag("ConsoleCreated");
+        foreach (GameObject Obj in Objs)
+        {
+            if (Obj.name == Args[1])
+            {
+                System.Type ToRemove = ConsoleUtils.FindType(Args[2], false, true);
+                Destroy(Obj.GetComponent(ToRemove));
+            }
+        }
     }
     [Command("del_sound")]
     public void DelSound(string[] Args)
     {
-        GameObject ToSound = GameObject.Find(Args[1]);
-        Destroy(ToSound.GetComponent<AudioHandler>());
-        Destroy(ToSound.GetComponent<AudioSource>());
+        GameObject[] Objs;
+        Objs = GameObject.FindGameObjectsWithTag("ConsoleCreated");
+        foreach (GameObject Obj in Objs)
+        {
+            if (Obj.name == Args[1])
+            {
+                Destroy(Obj.GetComponent<AudioHandler>());
+                Destroy(Obj.GetComponent<AudioSource>());
+            }
+        }
     }
     [Command("del_texture")]
     public void DelTexture(string[] Args)
@@ -414,10 +463,13 @@ public class ConsoleInputMan : MonoBehaviour {
         Objs = GameObject.FindGameObjectsWithTag("ConsoleCreated");
         foreach (GameObject Obj in Objs)
         {
-                    Renderer = Obj.GetComponent<Renderer>();
-                    var Tex = new Texture2D(1, 1);
-                    Renderer.material.mainTexture = Tex; //litterally just sets it to a white square
-                    SendMSG("Removed texture from " + Args[1]);
+            if (Obj.name == Args[1])
+            {
+                Renderer = Obj.GetComponent<Renderer>();
+                var Tex = new Texture2D(1, 1);
+                Renderer.material.mainTexture = Tex; //litterally just sets it to a white square
+                SendMSG("Removed texture from " + Args[1]);
+            }
         }
     }
     [Command("clear")]
@@ -445,24 +497,25 @@ public class ConsoleInputMan : MonoBehaviour {
             if (Args[1].Contains(".obj"))
                 ParseCommand("create " + Args[1] + " " + hit.point.x + " " + y + " " + hit.point.z + " " + Args[2] + " " + Args[3] + " " + Args[4] + " " + Args[5] + " " + Args[6]);
             else
-                ParseCommand("create " + Args[1] + " " + hit.point.x + " " + y + " " + hit.point.z + " " + Args[2] + " " + Args[3] + " " + Args[4]);
-            StartCoroutine(Unclip(Args[1]));
+                ParseCommand("create " + Args[1] + " " + hit.point.x + " " + y + " " + hit.point.z + " " + Args[2] + " " + Args[3] + " " + Args[4] + " " + Args[5]);
+            StartCoroutine(Unclip(Args[5]));
         }
     }
-    [Command("connectrandom")]
-    public void connectrandom(string[] Args)
-    {
-        NetworkMan.ConnectRandom();
-    }
+
     IEnumerator Unclip(string Find)
     {
-        yield return new WaitForSeconds(0.05f);
-        GameObject ToComp = GameObject.Find(Find);
-        Rigidbody ToRigid = ToComp.AddComponent<Rigidbody>();
-        ToRigid.isKinematic = true;
-        yield return new WaitForSeconds(0.01f);
-        ToRigid.isKinematic = false;
-        Destroy(ToRigid);
+        yield return new WaitForSeconds(0.1f);
+        GameObject[] Objs;
+        Objs = GameObject.FindGameObjectsWithTag("ConsoleCreated");
+        foreach (GameObject Obj in Objs)
+        {
+            if (Obj.name == Find)
+            {
+                Rigidbody ToRigid = Obj.AddComponent<Rigidbody>();
+                yield return new WaitForSeconds(0.03f);
+                Destroy(ToRigid);
+            }
+        }
     }
 
     public string GetName(string FileName)
