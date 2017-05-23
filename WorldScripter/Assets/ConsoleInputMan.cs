@@ -498,25 +498,9 @@ public class ConsoleInputMan : MonoBehaviour {
                 ParseCommand("create " + Args[1] + " " + hit.point.x + " " + y + " " + hit.point.z + " " + Args[2] + " " + Args[3] + " " + Args[4] + " " + Args[5] + " " + Args[6]);
             else
                 ParseCommand("create " + Args[1] + " " + hit.point.x + " " + y + " " + hit.point.z + " " + Args[2] + " " + Args[3] + " " + Args[4] + " " + Args[5]);
-            StartCoroutine(Unclip(Args[5]));
         }
     }
 
-    IEnumerator Unclip(string Find)
-    {
-        yield return new WaitForSeconds(0.1f);
-        GameObject[] Objs;
-        Objs = GameObject.FindGameObjectsWithTag("ConsoleCreated");
-        foreach (GameObject Obj in Objs)
-        {
-            if (Obj.name == Find)
-            {
-                Rigidbody ToRigid = Obj.AddComponent<Rigidbody>();
-                yield return new WaitForSeconds(0.03f);
-                Destroy(ToRigid);
-            }
-        }
-    }
 
     public string GetName(string FileName)
     {
