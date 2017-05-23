@@ -4,6 +4,8 @@
 /WorldScripter/[Bb]uild/
 /WorldScripter/[Bb]uilds/
 /WorldScripter/Assets/AssetStoreTools*
+/WorldScripter/Assets/Photon*
+/WorldScripter/Assets/Plugins*
 
 # Visual Studio 2015 cache directory
 /.vs/

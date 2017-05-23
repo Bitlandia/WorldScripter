@@ -23,6 +23,7 @@ public class ConsoleInputMan : MonoBehaviour {
     public string PathToScriptFolder;
     public string PathToModelFolder;
     public string PathToAudioFolder;
+    public NetworkClient NetworkMan;
     bool IsEnabled = false;
 
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
@@ -59,12 +60,21 @@ public class ConsoleInputMan : MonoBehaviour {
             Directory.CreateDirectory(PathToTextureFolder);
         if (!Directory.Exists(PathToAudioFolder))
             Directory.CreateDirectory(PathToAudioFolder);
+        //Game Crucial Variables
+        PanelToUpdate = GameObject.Find("ModAPICont");
+        TextToUpdate = GameObject.Find("Console Out");
+        ScrollViewToUpdate = GameObject.Find("TermScroll");
+        TextboxToUpdate = GameObject.Find("TermInput");
+        PlayerToUpdate = this.gameObject;
+        CameraFPS = GameObject.Find("MainCamera");
         //Initiate Console
         Text TextUPDComp = TextToUpdate.GetComponent<Text>();
         TextUPDComp.text = "WorldScripter 0.1a - (C) Bitlandia Studios 2017";
         SendMSG("For more information see the Credits tab.");
         SendMSG("For help see https://github.com/Bitlandia/WorldScripter/wiki.");
         PanelToUpdate.SetActive(false);
+        //Setup Networking
+        NetworkMan = PlayerToUpdate.GetComponent<NetworkClient>();
     }
 
     public void Update()
@@ -194,7 +204,7 @@ public class ConsoleInputMan : MonoBehaviour {
         catch { SendMSG("Unexpected error"); }
     }
     [Command("list")]
-    public void List()
+    public void List(string[] Args)
     {
         //Take every object with ConsoleCreated and list it.
         GameObject[] Objs;
@@ -411,7 +421,7 @@ public class ConsoleInputMan : MonoBehaviour {
         }
     }
     [Command("clear")]
-    public void Clear()
+    public void Clear(string[] Args)
     {
         GameObject[] Objs;
         Objs = GameObject.FindGameObjectsWithTag("ConsoleCreated");
@@ -439,7 +449,11 @@ public class ConsoleInputMan : MonoBehaviour {
             StartCoroutine(Unclip(Args[1]));
         }
     }
-
+    [Command("connectrandom")]
+    public void connectrandom(string[] Args)
+    {
+        NetworkMan.ConnectRandom();
+    }
     IEnumerator Unclip(string Find)
     {
         yield return new WaitForSeconds(0.05f);
