@@ -399,8 +399,12 @@ public class ConsoleInputMan : MonoBehaviour {
         {
             if(Obj.name == Args[1])
             {
-                Obj.AddComponent(ConsoleUtils.FindType(Args[2], false, true)); // Actually get the type
-                SendMSG("Added " + Args[2] + " to " + Args[1]);
+                try
+                {
+                    Obj.AddComponent(ConsoleUtils.FindType(Args[2], false, true)); // Actually get the type
+                    SendMSG("Added " + Args[2] + " to " + Args[1]);
+                }
+                catch { }
             }   
         }
     }
@@ -421,9 +425,13 @@ public class ConsoleInputMan : MonoBehaviour {
         {
             if (Obj.name == Args[1])
             {
-                AudioHandler Audio = Obj.AddComponent<AudioHandler>();
-                Audio.Run(FileName);
-                SendMSG("Added sound to " + Args[1]);
+                try
+                {
+                    AudioHandler Audio = Obj.AddComponent<AudioHandler>();
+                    Audio.Run(FileName);
+                    SendMSG("Added sound to " + Args[1]);
+                }
+                catch { }
             }
         }
     }
@@ -522,24 +530,27 @@ public class ConsoleInputMan : MonoBehaviour {
         {
             if (Obj.name == Args[1])
             {
-                if (System.IO.File.Exists(FilePath))
+                try
                 {
-                    Emitter = Obj.AddComponent<ParticleSystem>(); // Actually get the type
-                    Renderer = Obj.GetComponent<ParticleSystemRenderer>();
-                    var Bytes = System.IO.File.ReadAllBytes(FilePath);
-                    var Tex = new Texture2D(1, 1); //Load the texture onto a texture
-                    ShapeModule = Emitter.shape;
-                    Tex.LoadImage(Bytes);
-                    Renderer.material.mainTexture = Tex;
-                    ShapeModule.shapeType = ParticleSystemShapeType.Sphere;
-                    Renderer.material.shader = Shader.Find("Particles/Alpha Blended");
-                    Emission = Emitter.main;
-                    Emission.maxParticles = 20;
-                    Emission.startLifetime = 0.7F;
-                    Emitter.Play();
-                    Debug.Log("7");
-                    SendMSG("Added particle to " + Args[1]);
+                    if (System.IO.File.Exists(FilePath))
+                    {
+                        Emitter = Obj.AddComponent<ParticleSystem>(); // Actually get the type
+                        Renderer = Obj.GetComponent<ParticleSystemRenderer>();
+                        var Bytes = System.IO.File.ReadAllBytes(FilePath);
+                        var Tex = new Texture2D(1, 1); //Load the texture onto a texture
+                        ShapeModule = Emitter.shape;
+                        Tex.LoadImage(Bytes);
+                        Renderer.material.mainTexture = Tex;
+                        ShapeModule.shapeType = ParticleSystemShapeType.Sphere;
+                        Renderer.material.shader = Shader.Find("Particles/Alpha Blended");
+                        Emission = Emitter.main;
+                        Emission.maxParticles = 100;
+                        Emission.startLifetime = 0.5F;
+                        Emitter.Play();
+                        SendMSG("Added particle to " + Args[1]);
+                    }
                 }
+                catch { }
             }
         }
     }
