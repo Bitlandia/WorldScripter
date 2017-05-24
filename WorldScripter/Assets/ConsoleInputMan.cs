@@ -98,6 +98,26 @@ public class ConsoleInputMan : MonoBehaviour {
                 MLook.SetCursorLock(true);
             }
         }
+
+        OBJData OBJDataFind;
+
+        try
+        {
+            if (Input.GetKeyDown("e"))
+            {
+                RaycastHit hit;
+                Transform Cam = CameraFPS.transform;
+                var Ray = new Ray(Cam.position, Cam.forward);
+                if (Physics.Raycast(Ray, out hit, 500f))
+                {
+                    OBJDataFind = hit.collider.gameObject.GetComponent<OBJData>();
+                    if (OBJDataFind.IsButton == true)
+                    {
+                        ParseCommand(OBJDataFind.ButtonCMD);
+                    }
+                }
+            }
+        } catch { }
     }
 
 
@@ -190,6 +210,7 @@ public class ConsoleInputMan : MonoBehaviour {
                     MeshCollide.convex = true;
                     MeshCollide.inflateMesh = true;
                     MeshCollide.skinWidth = float.Parse(Args[9]);
+                    ObjMesh.AddComponent<OBJData>();
                 }
             }
             else
@@ -199,6 +220,7 @@ public class ConsoleInputMan : MonoBehaviour {
             Obj.transform.localScale = new Vector3(float.Parse(Args[5]), float.Parse(Args[6]), float.Parse(Args[7])); //Set the scale
             Obj.name = Args[8]; //Set the name
             Obj.tag = "ConsoleCreated"; //Set the tag
+            Obj.AddComponent<OBJData>();
             SendMSG("Created " + Args[1] + " at " + Args[2] + ", " + Args[3] + ", " + Args[4] + " with scale of " + Args[5] + ", " + Args[6] + ", " + Args[7] + " named " + Args[8] + ".");
         }
         catch { SendMSG("Unexpected error"); }
@@ -277,7 +299,7 @@ public class ConsoleInputMan : MonoBehaviour {
             {
                 if (Arg == "echo") { }
                 else
-                    ToOut = ToOut + Arg;
+                    ToOut = ToOut + " " + Arg;
             }
             SendMSG(ToOut);
         }
@@ -293,8 +315,9 @@ public class ConsoleInputMan : MonoBehaviour {
             foreach (string Arg in Args)
             {
                 if (Arg == "run") { }
+                else if (Arg == Args[1]) { FileName = FileName + Arg; }
                 else
-                    FileName = FileName + Arg;
+                    FileName = FileName + " " + Arg;
             }
             StreamReader Reader = new StreamReader(FileName, Encoding.Default);
             Debug.Log(FileName);
@@ -370,8 +393,9 @@ public class ConsoleInputMan : MonoBehaviour {
             //Just if you have files in the name.
             if (Arg == "add_texture") { }
             else if (Arg == Args[1]) { }
+            else if (Arg == Args[2]) { FilePath = FilePath + Arg; }
             else
-                FilePath = FilePath + Arg;
+                FilePath = FilePath + " " + Arg;
         }
         Objs = GameObject.FindGameObjectsWithTag("ConsoleCreated"); // Make sure we aren't doing something stupid here
         foreach (GameObject Obj in Objs)
@@ -408,6 +432,61 @@ public class ConsoleInputMan : MonoBehaviour {
             }   
         }
     }
+    [Command("add_button")]
+    public void AddButton(string[] Args)
+    {
+        GameObject[] Objs;
+        string CMDName = ""; //incase you have spaces
+        foreach (string Arg in Args)
+        {
+            if (Arg == "add_button") { }
+            else if (Arg == Args[1]) { }
+            else if (Arg == Args[2]) { CMDName = CMDName + Arg; }
+            else
+                CMDName = CMDName + " " + Arg;
+        }
+        Objs = GameObject.FindGameObjectsWithTag("ConsoleCreated");
+        foreach (GameObject Obj in Objs)
+        {
+            if (Obj.name == Args[1])
+            {
+                Obj.GetComponent<OBJData>().IsButton = true;
+                Obj.GetComponent<OBJData>().ButtonCMD = CMDName;
+                //Add to mesh - crappyhack
+                List<GameObject> ChildrenGo = new List<GameObject>();
+                int Children = Obj.transform.childCount;
+                for (int i = 0; i < Children; ++i)
+                    ChildrenGo.Add(Obj.transform.GetChild(i).gameObject);
+                foreach (GameObject ObjMesh in ChildrenGo)
+                {
+                    ObjMesh.GetComponent<OBJData>().IsButton = true;
+                    ObjMesh.GetComponent<OBJData>().ButtonCMD = CMDName;
+                }
+            }
+        }
+    }
+    [Command("del_button")]
+    public void DelButton(string[] Args)
+    {
+        GameObject[] Objs;
+        Objs = GameObject.FindGameObjectsWithTag("ConsoleCreated");
+        foreach (GameObject Obj in Objs)
+        {
+            if (Obj.name == Args[1])
+            {
+                Obj.GetComponent<OBJData>().IsButton = false;
+                //Remove from mesh - crappy hack
+                List<GameObject> ChildrenGo = new List<GameObject>();
+                int Children = Obj.transform.childCount;
+                for (int i = 0; i < Children; ++i)
+                    ChildrenGo.Add(Obj.transform.GetChild(i).gameObject);
+                foreach (GameObject ObjMesh in ChildrenGo)
+                {
+                    Obj.GetComponent<OBJData>().IsButton = false;
+                }
+            }
+        }
+    }
     [Command("add_sound")]
     public void AddSound(string[] Args)
     {
@@ -418,8 +497,9 @@ public class ConsoleInputMan : MonoBehaviour {
         {
             if (Arg == "add_sound") { }
             else if (Arg == Args[1]) { }
+            else if (Arg == Args[2]) { FileName = FileName + Arg; }
             else
-                FileName = FileName + Arg;
+                FileName = FileName + " " + Arg;
         }
         foreach (GameObject Obj in Objs)
         {
@@ -522,8 +602,9 @@ public class ConsoleInputMan : MonoBehaviour {
             //Just if you have files in the name.
             if (Arg == "add_particle") { }
             else if (Arg == Args[1]) { }
+            else if (Arg == Args[2]) { FilePath = FilePath + Arg; }
             else
-                FilePath = FilePath + Arg;
+                FilePath = FilePath + " " + Arg;
         }
         Objs = GameObject.FindGameObjectsWithTag("ConsoleCreated"); // Make sure we aren't doing something stupid here
         foreach (GameObject Obj in Objs)
@@ -554,7 +635,6 @@ public class ConsoleInputMan : MonoBehaviour {
             }
         }
     }
-
 
     public string GetName(string FileName)
     {
