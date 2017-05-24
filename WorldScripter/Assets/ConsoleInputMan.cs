@@ -69,7 +69,7 @@ public class ConsoleInputMan : MonoBehaviour {
         CameraFPS = GameObject.Find("MainCamera");
         //Initiate Console
         Text TextUPDComp = TextToUpdate.GetComponent<Text>();
-        TextUPDComp.text = "WorldScripter 0.1a - (C) Bitlandia Studios 2017";
+        TextUPDComp.text = "WorldScripter 0.2a - (C) Bitlandia Studios 2017";
         SendMSG("For more information see the Credits tab.");
         SendMSG("For help see https://github.com/Bitlandia/WorldScripter/wiki.");
         PanelToUpdate.SetActive(false);
