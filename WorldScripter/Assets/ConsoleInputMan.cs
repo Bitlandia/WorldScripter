@@ -500,6 +500,49 @@ public class ConsoleInputMan : MonoBehaviour {
                 ParseCommand("create " + Args[1] + " " + hit.point.x + " " + y + " " + hit.point.z + " " + Args[2] + " " + Args[3] + " " + Args[4] + " " + Args[5]);
         }
     }
+    [Command("add_particle")]
+    public void AddParticle(string[] Args)
+    {
+        GameObject[] Objs;
+        ParticleSystem Emitter;
+        ParticleSystemRenderer Renderer;
+        ParticleSystem.ShapeModule ShapeModule;
+        ParticleSystem.MainModule Emission;
+        var FilePath = PathToTextureFolder + "/";
+        foreach (string Arg in Args)
+        {
+            //Just if you have files in the name.
+            if (Arg == "add_particle") { }
+            else if (Arg == Args[1]) { }
+            else
+                FilePath = FilePath + Arg;
+        }
+        Objs = GameObject.FindGameObjectsWithTag("ConsoleCreated"); // Make sure we aren't doing something stupid here
+        foreach (GameObject Obj in Objs)
+        {
+            if (Obj.name == Args[1])
+            {
+                if (System.IO.File.Exists(FilePath))
+                {
+                    Emitter = Obj.AddComponent<ParticleSystem>(); // Actually get the type
+                    Renderer = Obj.GetComponent<ParticleSystemRenderer>();
+                    var Bytes = System.IO.File.ReadAllBytes(FilePath);
+                    var Tex = new Texture2D(1, 1); //Load the texture onto a texture
+                    ShapeModule = Emitter.shape;
+                    Tex.LoadImage(Bytes);
+                    Renderer.material.mainTexture = Tex;
+                    ShapeModule.shapeType = ParticleSystemShapeType.Sphere;
+                    Renderer.material.shader = Shader.Find("Particles/Alpha Blended");
+                    Emission = Emitter.main;
+                    Emission.maxParticles = 20;
+                    Emission.startLifetime = 0.7F;
+                    Emitter.Play();
+                    Debug.Log("7");
+                    SendMSG("Added particle to " + Args[1]);
+                }
+            }
+        }
+    }
 
 
     public string GetName(string FileName)
