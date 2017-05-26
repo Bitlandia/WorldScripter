@@ -113,7 +113,15 @@ public class ConsoleInputMan : MonoBehaviour {
                     OBJDataFind = hit.collider.gameObject.GetComponent<OBJData>();
                     if (OBJDataFind.IsButton == true)
                     {
-                        ParseCommand(OBJDataFind.ButtonCMD);
+                        if(OBJDataFind.ButtonCMD == "self_destruct")
+                        {
+                            if (OBJDataFind.IsPartOfMesh)
+                                Destroy(hit.collider.transform.parent.gameObject);
+                            else
+                                Destroy(hit.collider.gameObject);
+                        }
+                        else
+                            ParseCommand(OBJDataFind.ButtonCMD);
                     }
                 }
             }
@@ -210,7 +218,8 @@ public class ConsoleInputMan : MonoBehaviour {
                     MeshCollide.convex = true;
                     MeshCollide.inflateMesh = true;
                     MeshCollide.skinWidth = float.Parse(Args[9]);
-                    ObjMesh.AddComponent<OBJData>();
+                    OBJData DataToUpd = ObjMesh.AddComponent<OBJData>();
+                    DataToUpd.IsPartOfMesh = true;
                 }
             }
             else
