@@ -325,7 +325,7 @@ public class ConsoleInputMan : MonoBehaviour {
             Obj.transform.localScale = new Vector3(float.Parse(Args[5]), float.Parse(Args[6]), float.Parse(Args[7])); //Set the scale
             Obj.name = Args[8]; //Set the name
             Obj.tag = "ConsoleCreated"; //Set the tag
-            SendMSG("Created " + Args[1] + " at " + Args[2] + ", " + Args[3] + ", " + Args[4] + " with scale of " + Args[5] + ", " + Args[6] + ", " + Args[7] + " named " + Args[8] + ".");
+            //SendMSG("Created " + Args[1] + " at " + Args[2] + ", " + Args[3] + ", " + Args[4] + " with scale of " + Args[5] + ", " + Args[6] + ", " + Args[7] + " named " + Args[8] + ".");
         }
         catch (System.Exception e) { SendMSG("Unexpected error"); Debug.LogError(e.ToString()); }
     }
@@ -351,7 +351,7 @@ public class ConsoleInputMan : MonoBehaviour {
                 if (Obj.name == Args[1])
                 {
                     Obj.GetComponent<Renderer>().material.color = new Color32(byte.Parse(Args[2]), byte.Parse(Args[3]), byte.Parse(Args[3]), byte.Parse(Args[3]));
-                    SendMSG("Changed color of " + Args[1] + " to " + Args[2] + ", " + Args[3] + ", " + Args[4] + ".");
+                    //SendMSG("Changed color of " + Args[1] + " to " + Args[2] + ", " + Args[3] + ", " + Args[4] + ".");
                 }
             }
         }
@@ -369,7 +369,7 @@ public class ConsoleInputMan : MonoBehaviour {
                 if (Obj.name == Args[1])
                 {
                     GameObject.Destroy(Obj);
-                    SendMSG("Destroyed " + Args[1] + ".");
+                    //SendMSG("Destroyed " + Args[1] + ".");
                 }
             }
         }
@@ -387,7 +387,7 @@ public class ConsoleInputMan : MonoBehaviour {
                 if (Obj.name == Args[1])
                 {
                     Obj.transform.position = new Vector3(float.Parse(Args[2]), float.Parse(Args[3]), float.Parse(Args[4]));
-                    SendMSG("Moved " + Args[1] + " to " + Args[2] + ", " + Args[3] + ", " + Args[4] + ".");
+                    //SendMSG("Moved " + Args[1] + " to " + Args[2] + ", " + Args[3] + ", " + Args[4] + ".");
                 }
             }
         }
@@ -462,7 +462,7 @@ public class ConsoleInputMan : MonoBehaviour {
                 if (Obj.name == Args[1])
                 {
                     Obj.transform.rotation = new Quaternion(int.Parse(Args[2]), int.Parse(Args[3]), int.Parse(Args[4]), int.Parse(Args[5]));
-                    SendMSG("Rotated " + Args[1] + " to " + Args[2] + ", " + Args[3] + ", " + Args[4] + ", " + Args[5] + ".");
+                    //SendMSG("Rotated " + Args[1] + " to " + Args[2] + ", " + Args[3] + ", " + Args[4] + ", " + Args[5] + ".");
                 }
             }
         }
@@ -480,7 +480,7 @@ public class ConsoleInputMan : MonoBehaviour {
                 if (Obj.name == Args[1])
                 {
                     Obj.transform.localScale = new Vector3(float.Parse(Args[2]), float.Parse(Args[3]), float.Parse(Args[5]));
-                    SendMSG("Scaled " + Args[1] + " to " + Args[2] + ", " + Args[3] + ", " + Args[4] + ".");
+                    //SendMSG("Scaled " + Args[1] + " to " + Args[2] + ", " + Args[3] + ", " + Args[4] + ".");
                 }
             }
         }
@@ -513,7 +513,7 @@ public class ConsoleInputMan : MonoBehaviour {
                     var Tex = new Texture2D(1, 1); //Load the texture onto a texture
                     Tex.LoadImage(Bytes);
                     Renderer.material.mainTexture = Tex;
-                    SendMSG("Added texture to " + Args[1]);
+                    //SendMSG("Added texture to " + Args[1]);
                 }
             }
         }
@@ -530,7 +530,7 @@ public class ConsoleInputMan : MonoBehaviour {
                 try
                 {
                     Obj.AddComponent(ConsoleUtils.FindType(Args[2], false, true)); // Actually get the type
-                    SendMSG("Added " + Args[2] + " to " + Args[1]);
+                    //SendMSG("Added " + Args[2] + " to " + Args[1]);
                 }
                 catch { }
             }   
@@ -613,7 +613,7 @@ public class ConsoleInputMan : MonoBehaviour {
                 {
                     AudioHandler Audio = Obj.AddComponent<AudioHandler>();
                     Audio.Run(FileName);
-                    SendMSG("Added sound to " + Args[1]);
+                    //SendMSG("Added sound to " + Args[1]);
                 }
                 catch { }
             }
@@ -673,7 +673,7 @@ public class ConsoleInputMan : MonoBehaviour {
                 Renderer = Obj.GetComponent<Renderer>();
                 var Tex = new Texture2D(1, 1);
                 Renderer.material.mainTexture = Tex; //litterally just sets it to a white square
-                SendMSG("Removed texture from " + Args[1]);
+                //SendMSG("Removed texture from " + Args[1]);
             }
         }
     }
@@ -745,7 +745,7 @@ public class ConsoleInputMan : MonoBehaviour {
                         Emission.maxParticles = 100;
                         Emission.startLifetime = 0.5F;
                         Emitter.Play();
-                        SendMSG("Added particle to " + Args[1]);
+                        //SendMSG("Added particle to " + Args[1]);
                     }
                 }
                 catch { }
