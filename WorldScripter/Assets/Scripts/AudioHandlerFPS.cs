@@ -40,7 +40,6 @@ public class AudioHandlerFPS : MonoBehaviour
         }
         catch (System.Exception ex)
         {
-            Debug.LogError(ex.ToString());
         }
     }
 }

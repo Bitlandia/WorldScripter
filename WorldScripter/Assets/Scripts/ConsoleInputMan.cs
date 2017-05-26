@@ -25,6 +25,7 @@ public class ConsoleInputMan : MonoBehaviour {
     public string PathToModelFolder;
     public string PathToAudioFolder;
     public NetworkClient NetworkMan;
+    bool NoClip = false;
     bool IsEnabled = false;
     List<GameObject> GOCache = new List<GameObject>();
 
@@ -81,51 +82,29 @@ public class ConsoleInputMan : MonoBehaviour {
 
     public void Update()
     {
-        RigidbodyFirstPersonController FPSCtrl = PlayerToUpdate.GetComponent<RigidbodyFirstPersonController>();
-        MouseLook MLook = FPSCtrl.mouseLook;
-        if (UnityEngine.Input.GetKeyDown(KeyCode.Escape))
-        {
-            if (IsEnabled == false)
-            {
-                PanelToUpdate.SetActive(true);
-                IsEnabled = true;
-                MLook.SetCursorLock(false);
-                FPSCtrl.enabled = false;
-            }
-            else
-            {
-                FPSCtrl.enabled = true;
-                PanelToUpdate.SetActive(false);
-                IsEnabled = false;
-                MLook.SetCursorLock(true);
-            }
-        }
+        CharControl();
 
+        if (PanelToUpdate.activeSelf == true)
+            return;
         OBJData OBJDataFind;
 
-        //try
+        try
         {
             if (Input.GetKeyDown("e"))
             {
-                Debug.Log("1");
                 RaycastHit hit;
                 Transform Cam = CameraFPS.transform;
                 var Ray = new Ray(Cam.position, Cam.forward);
-                Debug.Log("2");
                 if (Physics.Raycast(Ray, out hit, 500f))
                 {
-                    Debug.Log("3");
                     OBJDataFind = hit.collider.gameObject.GetComponent<OBJData>();
                     Debug.Log(OBJDataFind.ButtonCMD);
-                    Debug.Log("4");
                     string[] Commands = OBJDataFind.ButtonCMD.Split(char.Parse(","));
                     Debug.Log(OBJDataFind.ButtonCMD);
-                    Debug.Log("5");
                     if (OBJDataFind.IsButton == true)
                     {
                         foreach(string Commandtorun in Commands)
                         {
-                            Debug.Log("6");
                             Debug.Log(Commandtorun);
                             ParseCommand(Commandtorun);
                             if (Commandtorun == "self_destruct")
@@ -135,14 +114,89 @@ public class ConsoleInputMan : MonoBehaviour {
                                 else
                                     Destroy(hit.collider.gameObject);
                             }
-                            //else
                         }
                     }
                 }
             }
-        } //catch (System.Exception e) { Debug.LogError(e.ToString()); }
+        } catch (System.Exception e) { Debug.LogError(e.ToString()); }
     }
 
+    public void CharControl()
+    {
+        RigidbodyFirstPersonController FPSCtrl = PlayerToUpdate.GetComponent<RigidbodyFirstPersonController>();
+        MouseLook MLook = FPSCtrl.mouseLook;
+        NoClipFirstPersonController NCFPS = PlayerToUpdate.GetComponent<NoClipFirstPersonController>();
+        NoClipMouseLook NCML = PlayerToUpdate.GetComponent<NoClipMouseLook>();
+        Rigidbody RigidbodyToUpd = PlayerToUpdate.GetComponent<Rigidbody>();
+        CapsuleCollider ColliderToUpd = PlayerToUpdate.GetComponent<CapsuleCollider>();
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            if (PanelToUpdate.activeSelf == true)
+                return;
+            CameraFPS.transform.rotation = new Quaternion(0, 0, 0, 0);
+            if (!NoClip)
+            {
+                NCFPS.enabled = true;
+                NCML.enabled = true;
+                FPSCtrl.enabled = false;
+                RigidbodyToUpd.isKinematic = true;
+                ColliderToUpd.enabled = false;
+                NoClip = true;
+            }
+            else
+            {
+                NCFPS.enabled = false;
+                NCML.enabled = false;
+                FPSCtrl.enabled = true;
+                RigidbodyToUpd.isKinematic = false;
+                ColliderToUpd.enabled = true;
+                NoClip = false;
+            }
+        }
+        //Update GUI
+        if (NoClip == true)
+        {
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Escape))
+            {
+                if (IsEnabled == false)
+                {
+                    PanelToUpdate.SetActive(true);
+                    IsEnabled = true;
+                    NCML.SetCursorLock(false);
+                    NCFPS.enabled = false;
+                    NCML.enabled = false;
+                }
+                else
+                {
+                    PanelToUpdate.SetActive(false);
+                    IsEnabled = false;
+                    NCML.SetCursorLock(true);
+                    NCFPS.enabled = true;
+                    NCML.enabled = true;
+                }
+            }
+        }
+        else
+        {
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Escape))
+            {
+                if (IsEnabled == false)
+                {
+                    PanelToUpdate.SetActive(true);
+                    IsEnabled = true;
+                    MLook.SetCursorLock(false);
+                    FPSCtrl.enabled = false;
+                }
+                else
+                {
+                    FPSCtrl.enabled = true;
+                    PanelToUpdate.SetActive(false);
+                    IsEnabled = false;
+                    MLook.SetCursorLock(true);
+                }
+            }
+        }
+    }
 
     public void SendMSG(string Out)
     {
@@ -174,8 +228,6 @@ public class ConsoleInputMan : MonoBehaviour {
     public void ParseCommand(string Input)
     {
         string[] Args = Input.Split(char.Parse(" "));
-        Debug.Log(Input);
-        Debug.Log(Args[0]);
         var Type = typeof(ConsoleInputMan);
         MethodInfo[] Methods = Type.GetMethods(BindingFlags.Public | BindingFlags.Instance);
         foreach (MethodInfo Method in Methods)
@@ -185,10 +237,8 @@ public class ConsoleInputMan : MonoBehaviour {
                 var SomeAttrib = Method.GetCustomAttributes(false).FirstOrDefault(x => x is Command) as Command;
                 if (SomeAttrib != null)
                 {
-                    //Debug.Log(SomeAttrib.name);
                     if (SomeAttrib.name == Args[0])
                     {
-                        Debug.Log(SomeAttrib.name);
                         Method.Invoke(this, new object[] { Args });
                     }
                 }
@@ -234,14 +284,11 @@ public class ConsoleInputMan : MonoBehaviour {
                 {
                     foreach (GameObject GameOBJ in GOCache)
                     {
-                        Debug.Log("more than 0, an object was cached");
-                        Debug.Log(GameOBJ.name);
-                        Debug.Log(Args[1]);
                         if (GameOBJ.GetComponent<OBJData>().CachePath == FilePath)
                         {
                             NeedToLoad = false;
                             Obj = Instantiate(GameOBJ); //Load it from the cache!
-                            Debug.Log("Loaded from cache.");
+                            Obj.SetActive(true);
                         }
                     }
                 }
@@ -266,7 +313,9 @@ public class ConsoleInputMan : MonoBehaviour {
                 if(NeedToLoad == true)
                 {
                     DataToUpd.CachePath = FilePath;
-                    GOCache.Add(Obj);
+                    GameObject ObjToCache = Instantiate(Obj);
+                    GOCache.Add(ObjToCache);
+                    ObjToCache.SetActive(false);
                 }
             }
             else
@@ -500,7 +549,6 @@ public class ConsoleInputMan : MonoBehaviour {
             else
                 CMDName = CMDName + " " + Arg;
         }
-        Debug.Log(CMDName);
         Objs = GameObject.FindGameObjectsWithTag("ConsoleCreated");
         foreach (GameObject Obj in Objs)
         {
@@ -582,7 +630,6 @@ public class ConsoleInputMan : MonoBehaviour {
             else
                 FileName = FileName + " " + Arg;
         }
-        Debug.Log(FileName);
         AudioPlayer.Run(FileName);
     }
     [Command("del_comp")]
@@ -724,16 +771,18 @@ public class ConsoleInputMan : MonoBehaviour {
                     {
                         try
                         {
-                            if (!Line.StartsWith("name-")) //Only get the meta data this time
+                            if (Line.StartsWith("name-")) //Only get the meta data this time
                             {
-                                Reader.Close(); //Just to avoid memory leaks
-                                return "null";
+                                Name = Line.Remove(0, 5);
+                                SendMSG("Found " + Name + " at " + FileName);
+                                Reader.Close();
+                                return Name;
                             }
                             else
-                                Name = Line.Remove(0, 5);
-                            SendMSG("Found " + Name + " at " + FileName);
-                            Reader.Close();
-                            return Name;
+                            {
+                                Reader.Close(); //Just to avoid memory leaks
+                                return "Name not found.";
+                            }
                         }
                         catch
                         {

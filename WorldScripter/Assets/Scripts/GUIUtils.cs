@@ -26,8 +26,6 @@ public class GUIUtils : MonoBehaviour {
         {
             Destroy(objmesh);
         }
-        //Get the console
-        Console = FPSController.GetComponent<ConsoleInputMan>();
         //Get the directory
         string Path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + "/WorldScripter/Scripts";
         DirectoryInfo Dir = new DirectoryInfo(Path + "/");
