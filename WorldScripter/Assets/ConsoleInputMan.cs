@@ -26,6 +26,7 @@ public class ConsoleInputMan : MonoBehaviour {
     public string PathToAudioFolder;
     public NetworkClient NetworkMan;
     bool IsEnabled = false;
+    List<GameObject> GOCache = new List<GameObject>();
 
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public class Command : Attribute
@@ -203,28 +204,50 @@ public class ConsoleInputMan : MonoBehaviour {
         try
         {
             GameObject Obj = null;
+            OBJData DataToUpd;
             var FilePath = PathToModelFolder + "/" + Args[1];
             //Object Types
             if (Args[1] == "cube")
             {
                 Obj = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                DataToUpd = Obj.AddComponent<OBJData>();
             }
             else if (Args[1] == "sphere")
             {
                 Obj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                DataToUpd = Obj.AddComponent<OBJData>();
             }
             else if (Args[1] == "cylinder")
             {
                 Obj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                DataToUpd = Obj.AddComponent<OBJData>();
             }
             else if (Args[1] == "capsule")
             {
                 Obj = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+                DataToUpd = Obj.AddComponent<OBJData>();
             }
             else if (File.Exists(FilePath))
             {
+                bool NeedToLoad = true;
+                if (GOCache.ToArray().Length > 0)
+                {
+                    foreach (GameObject GameOBJ in GOCache)
+                    {
+                        Debug.Log("more than 0, an object was cached");
+                        Debug.Log(GameOBJ.name);
+                        Debug.Log(Args[1]);
+                        if (GameOBJ.GetComponent<OBJData>().CachePath == FilePath)
+                        {
+                            NeedToLoad = false;
+                            Obj = Instantiate(GameOBJ); //Load it from the cache!
+                            Debug.Log("Loaded from cache.");
+                        }
+                    }
+                }
                 MeshCollider MeshCollide;
-                Obj = OBJLoader.LoadOBJFile(FilePath); //Create the object
+                if (NeedToLoad == true)
+                    Obj = OBJLoader.LoadOBJFile(FilePath); //Create the object
                 //Add the collision - crappy hack
                 List<GameObject> ChildrenGo = new List<GameObject>();
                 int Children = Obj.transform.childCount;
@@ -236,8 +259,14 @@ public class ConsoleInputMan : MonoBehaviour {
                     MeshCollide.convex = true;
                     MeshCollide.inflateMesh = true;
                     MeshCollide.skinWidth = float.Parse(Args[9]);
-                    OBJData DataToUpd = ObjMesh.AddComponent<OBJData>();
+                    DataToUpd = ObjMesh.AddComponent<OBJData>();
                     DataToUpd.IsPartOfMesh = true;
+                }
+                DataToUpd = Obj.AddComponent<OBJData>();
+                if(NeedToLoad == true)
+                {
+                    DataToUpd.CachePath = FilePath;
+                    GOCache.Add(Obj);
                 }
             }
             else
@@ -247,10 +276,9 @@ public class ConsoleInputMan : MonoBehaviour {
             Obj.transform.localScale = new Vector3(float.Parse(Args[5]), float.Parse(Args[6]), float.Parse(Args[7])); //Set the scale
             Obj.name = Args[8]; //Set the name
             Obj.tag = "ConsoleCreated"; //Set the tag
-            Obj.AddComponent<OBJData>();
             SendMSG("Created " + Args[1] + " at " + Args[2] + ", " + Args[3] + ", " + Args[4] + " with scale of " + Args[5] + ", " + Args[6] + ", " + Args[7] + " named " + Args[8] + ".");
         }
-        catch { SendMSG("Unexpected error"); }
+        catch (System.Exception e) { SendMSG("Unexpected error"); Debug.LogError(e.ToString()); }
     }
     [Command("list")]
     public void List(string[] Args)

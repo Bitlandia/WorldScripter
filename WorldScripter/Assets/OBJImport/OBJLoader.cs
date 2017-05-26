@@ -8,6 +8,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -159,7 +160,7 @@ public class OBJLoader
 
     public static GameObject LoadOBJFile(string fn)
     {
-
+        Debug.Log("Executed");
         string meshName = Path.GetFileNameWithoutExtension(fn);
 
         bool hasNormals = false;
@@ -190,7 +191,6 @@ public class OBJLoader
                 string l = ln.Trim().Replace("  "," ");
                 string[] cmps = l.Split(' ');
                 string data = l.Remove(0, l.IndexOf(' ') + 1);
-
                 if (cmps[0] == "mtllib")
                 {
                     //load cache
