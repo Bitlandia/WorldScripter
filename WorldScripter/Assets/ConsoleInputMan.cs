@@ -67,7 +67,6 @@ public class ConsoleInputMan : MonoBehaviour {
         ScrollViewToUpdate = GameObject.Find("TermScroll");
         TextboxToUpdate = GameObject.Find("TermInput");
         PlayerToUpdate = this.gameObject;
-        AudioPlayer = this.gameObject.GetComponent<AudioHandlerFPS>();
         CameraFPS = GameObject.Find("MainCamera");
         //Initiate Console
         Text TextUPDComp = TextToUpdate.GetComponent<Text>();
@@ -103,21 +102,31 @@ public class ConsoleInputMan : MonoBehaviour {
 
         OBJData OBJDataFind;
 
-        try
+        //try
         {
             if (Input.GetKeyDown("e"))
             {
+                Debug.Log("1");
                 RaycastHit hit;
                 Transform Cam = CameraFPS.transform;
                 var Ray = new Ray(Cam.position, Cam.forward);
+                Debug.Log("2");
                 if (Physics.Raycast(Ray, out hit, 500f))
                 {
+                    Debug.Log("3");
                     OBJDataFind = hit.collider.gameObject.GetComponent<OBJData>();
+                    Debug.Log(OBJDataFind.ButtonCMD);
+                    Debug.Log("4");
                     string[] Commands = OBJDataFind.ButtonCMD.Split(char.Parse(","));
+                    Debug.Log(OBJDataFind.ButtonCMD);
+                    Debug.Log("5");
                     if (OBJDataFind.IsButton == true)
                     {
                         foreach(string Commandtorun in Commands)
                         {
+                            Debug.Log("6");
+                            Debug.Log(Commandtorun);
+                            ParseCommand(Commandtorun);
                             if (Commandtorun == "self_destruct")
                             {
                                 if (OBJDataFind.IsPartOfMesh)
@@ -125,13 +134,12 @@ public class ConsoleInputMan : MonoBehaviour {
                                 else
                                     Destroy(hit.collider.gameObject);
                             }
-                            else
-                                ParseCommand(Commandtorun);
+                            //else
                         }
                     }
                 }
             }
-        } catch { }
+        } //catch (System.Exception e) { Debug.LogError(e.ToString()); }
     }
 
 
@@ -165,6 +173,8 @@ public class ConsoleInputMan : MonoBehaviour {
     public void ParseCommand(string Input)
     {
         string[] Args = Input.Split(char.Parse(" "));
+        Debug.Log(Input);
+        Debug.Log(Args[0]);
         var Type = typeof(ConsoleInputMan);
         MethodInfo[] Methods = Type.GetMethods(BindingFlags.Public | BindingFlags.Instance);
         foreach (MethodInfo Method in Methods)
@@ -174,8 +184,10 @@ public class ConsoleInputMan : MonoBehaviour {
                 var SomeAttrib = Method.GetCustomAttributes(false).FirstOrDefault(x => x is Command) as Command;
                 if (SomeAttrib != null)
                 {
+                    //Debug.Log(SomeAttrib.name);
                     if (SomeAttrib.name == Args[0])
                     {
+                        Debug.Log(SomeAttrib.name);
                         Method.Invoke(this, new object[] { Args });
                     }
                 }
@@ -460,6 +472,7 @@ public class ConsoleInputMan : MonoBehaviour {
             else
                 CMDName = CMDName + " " + Arg;
         }
+        Debug.Log(CMDName);
         Objs = GameObject.FindGameObjectsWithTag("ConsoleCreated");
         foreach (GameObject Obj in Objs)
         {
@@ -531,16 +544,17 @@ public class ConsoleInputMan : MonoBehaviour {
         }
     }
     [Command("add_sound_local")]
-    public void AddSoundLocal(string[] Args)
+    public void AddSoundLocalGG(string[] Args)
     {
         string FileName = "file:///" + PathToAudioFolder + "/"; //incase you have spaces
         foreach (string Arg in Args)
         {
-            if (Arg == "add_sound") { }
+            if (Arg == "add_sound_local") { }
             else if (Arg == Args[1]) { FileName = FileName + Arg; }
             else
                 FileName = FileName + " " + Arg;
         }
+        Debug.Log(FileName);
         AudioPlayer.Run(FileName);
     }
     [Command("del_comp")]

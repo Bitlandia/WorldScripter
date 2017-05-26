@@ -11,6 +11,10 @@ public class GUIUtils : MonoBehaviour {
     public ConsoleInputMan Console;
     public GameObject ButtonPrefab;
 
+    public void Awake()
+    {
+        Content = GameObject.Find("ScriptsButtons");
+    }
 	// Use this for initialization
 	public void Start () {
         //Clear all the old buttons
