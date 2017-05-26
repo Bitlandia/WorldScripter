@@ -18,6 +18,7 @@ public class ConsoleInputMan : MonoBehaviour {
     public GameObject PlayerToUpdate;
     public GameObject TextboxToUpdate;
     public GameObject CameraFPS;
+    public AudioHandlerFPS AudioPlayer;
     public string PathToWSFolder;
     public string PathToTextureFolder;
     public string PathToScriptFolder;
@@ -66,6 +67,7 @@ public class ConsoleInputMan : MonoBehaviour {
         ScrollViewToUpdate = GameObject.Find("TermScroll");
         TextboxToUpdate = GameObject.Find("TermInput");
         PlayerToUpdate = this.gameObject;
+        AudioPlayer = this.gameObject.GetComponent<AudioHandlerFPS>();
         CameraFPS = GameObject.Find("MainCamera");
         //Initiate Console
         Text TextUPDComp = TextToUpdate.GetComponent<Text>();
@@ -111,17 +113,21 @@ public class ConsoleInputMan : MonoBehaviour {
                 if (Physics.Raycast(Ray, out hit, 500f))
                 {
                     OBJDataFind = hit.collider.gameObject.GetComponent<OBJData>();
+                    string[] Commands = OBJDataFind.ButtonCMD.Split(char.Parse(","));
                     if (OBJDataFind.IsButton == true)
                     {
-                        if(OBJDataFind.ButtonCMD == "self_destruct")
+                        foreach(string Commandtorun in Commands)
                         {
-                            if (OBJDataFind.IsPartOfMesh)
-                                Destroy(hit.collider.transform.parent.gameObject);
+                            if (Commandtorun == "self_destruct")
+                            {
+                                if (OBJDataFind.IsPartOfMesh)
+                                    Destroy(hit.collider.transform.parent.gameObject);
+                                else
+                                    Destroy(hit.collider.gameObject);
+                            }
                             else
-                                Destroy(hit.collider.gameObject);
+                                ParseCommand(Commandtorun);
                         }
-                        else
-                            ParseCommand(OBJDataFind.ButtonCMD);
                     }
                 }
             }
