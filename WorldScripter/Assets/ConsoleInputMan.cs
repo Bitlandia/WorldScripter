@@ -530,6 +530,19 @@ public class ConsoleInputMan : MonoBehaviour {
             }
         }
     }
+    [Command("add_sound_local")]
+    public void AddSoundLocal(string[] Args)
+    {
+        string FileName = "file:///" + PathToAudioFolder + "/"; //incase you have spaces
+        foreach (string Arg in Args)
+        {
+            if (Arg == "add_sound") { }
+            else if (Arg == Args[1]) { FileName = FileName + Arg; }
+            else
+                FileName = FileName + " " + Arg;
+        }
+        AudioPlayer.Run(FileName);
+    }
     [Command("del_comp")]
     public void DelComp(string[] Args)
     {
