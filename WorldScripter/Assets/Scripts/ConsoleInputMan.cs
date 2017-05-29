@@ -114,6 +114,15 @@ public class ConsoleInputMan : MonoBehaviour {
                                 else
                                     Destroy(hit.collider.gameObject);
                             }
+                            if (Commandtorun.StartsWith("replace_with"))
+                            {
+                                string[] Args = Commandtorun.Split(char.Parse(" "));
+                                Debug.Log(Args[1]);
+                                if (OBJDataFind.IsPartOfMesh)
+                                    ReplaceWith(Args[1], hit.collider.transform.parent.gameObject, Args[2]);
+                                else
+                                    ReplaceWith(Args[1], hit.collider.gameObject, "0");
+                            }
                         }
                     }
                 }
@@ -751,6 +760,16 @@ public class ConsoleInputMan : MonoBehaviour {
                 catch { }
             }
         }
+    }
+
+    public void ReplaceWith(string obj, GameObject Object, string MeshCollide)
+    {
+        Vector3 ObjectVec = Object.transform.position;
+        Vector3 Scale = Object.transform.localScale;
+        string Name = Object.name;
+        Debug.Log(Name);
+        Destroy(Object);
+        ParseCommand("create " + obj + " " + ObjectVec.x.ToString() + " " + ObjectVec.y.ToString() + " " + ObjectVec.z.ToString() + " " + Scale.x.ToString() + " " + Scale.y.ToString() + " " + Scale.z.ToString() + " " + name + " " + 0);
     }
 
     public string GetName(string FileName)
