@@ -78,9 +78,8 @@ partial class ConsoleInputMan {
         string CMDName = ""; //incase you have spaces
         foreach (string Arg in Args)
         {
-            if (Arg == "add_button") { }
-            else if (Arg == Args[1]) { }
-            else if (Arg == Args[2]) { CMDName = CMDName + Arg; }
+            if (Arg == "change_button") { }
+            else if (Arg == Args[1]) { CMDName = CMDName + Arg; }
             else
                 CMDName = CMDName + " " + Arg;
         }
@@ -105,27 +104,27 @@ partial class ConsoleInputMan {
         LightToEdit.range = int.Parse(Args[6]);
         LightToEdit.color = new Color32(byte.Parse(Args[2]), byte.Parse(Args[3]), byte.Parse(Args[4]), byte.Parse(Args[5]));
     }
-    [Command("color_local")]
+    [ButtonCommand("color_local")]
     public void ColorLocal(string[] Args, GameObject Object)
     {
         Object.GetComponent<Renderer>().material.color = new Color32(byte.Parse(Args[1]), byte.Parse(Args[2]), byte.Parse(Args[3]), byte.Parse(Args[4]));
     }
-    [Command("move_local")]
+    [ButtonCommand("move_local")]
     public void MoveLocal(string[] Args, GameObject Object)
     {
         Object.transform.position = new Vector3(float.Parse(Args[1]), float.Parse(Args[2]), float.Parse(Args[3]));
     }
-    [Command("rotate_local")]
+    [ButtonCommand("rotate_local")]
     public void RotateLocal(string[] Args, GameObject Object)
     {
         Object.transform.rotation = new Quaternion(int.Parse(Args[1]), int.Parse(Args[2]), int.Parse(Args[3]), 0);
     }
-    [Command("scale_local")]
+    [ButtonCommand("scale_local")]
     public void ScaleLocal(string[] Args, GameObject Object)
     {
         Object.transform.localScale = new Vector3(float.Parse(Args[1]), float.Parse(Args[2]), float.Parse(Args[3]));
     }
-    [Command("add_texture_local")]
+    [ButtonCommand("add_texture_local")]
     public void AddTextureLocal(string[] Args, GameObject Object)
     {
         Renderer Renderer;
@@ -148,12 +147,12 @@ partial class ConsoleInputMan {
             //SendMSG("Added texture to " + Args[1]);
         }
     }
-    [Command("add_comp_local")]
+    [ButtonCommand("add_comp_local")]
     public void AddCompLocal(string[] Args, GameObject Object)
     {
         Object.AddComponent(ConsoleUtils.FindType(Args[1], false, true));
     }
-    [Command("del_button_local")]
+    [ButtonCommand("del_button_local")]
     public void DelButtonLocal(string[] Args, GameObject Object)
     {
         Object.GetComponent<OBJData>().IsButton = false;
@@ -167,7 +166,7 @@ partial class ConsoleInputMan {
             ObjMesh.GetComponent<OBJData>().IsButton = false;
         }
     }
-    [Command("add_sound_local")]
+    [ButtonCommand("add_sound_local")]
     public void AddSoundLocal(string[] Args, GameObject Object)
     {
         string FileName = "file:///" + PathToAudioFolder + "/"; //incase you have spaces
@@ -178,29 +177,30 @@ partial class ConsoleInputMan {
             else
                 FileName = FileName + " " + Arg;
         }
+        Debug.Log(FileName);
         AudioHandler Audio = Object.AddComponent<AudioHandler>();
         Audio.Run(FileName);
     }
-    [Command("del_comp_local")]
+    [ButtonCommand("del_comp_local")]
     public void DelCompLocal(string[] Args, GameObject Object)
     {
         System.Type ToRemove = ConsoleUtils.FindType(Args[1], false, true);
         Destroy(Object.GetComponent(ToRemove));
     }
-    [Command("del_sound_local")]
+    [ButtonCommand("del_sound_local")]
     public void DelSoundLocal(string[] Args, GameObject Object)
     {
         Destroy(Object.GetComponent<AudioHandler>());
         Destroy(Object.GetComponent<AudioSource>());
     }
-    [Command("del_texture_local")]
+    [ButtonCommand("del_texture_local")]
     public void DelTextureLocal(string[] Args, GameObject Object)
     {
         Renderer Renderer = Object.GetComponent<Renderer>();
         var Tex = new Texture2D(1, 1);
         Renderer.material.mainTexture = Tex; //litterally just sets it to a white square
     }
-    [Command("add_particle_local")]
+    [ButtonCommand("add_particle_local")]
     public void AddParticleLocal(string[] Args, GameObject Object)
     {
         GameObject[] Objs;
