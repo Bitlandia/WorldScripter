@@ -1,0 +1,5 @@
+name-RIP Blob Emojis
+create_raycast sphere 1 1 1 ripblob
+add_comp ripblob rigidbody
+add_texture ripblob face.png
+add_particle ripblob blobsplosion.png

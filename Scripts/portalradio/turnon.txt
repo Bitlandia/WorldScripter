@@ -1,0 +1,2 @@
+add_sound_local portal-radio.wav
+change_button run_local portalradio/turnoff.txt

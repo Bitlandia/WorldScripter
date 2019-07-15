@@ -1,0 +1,8 @@
+name-Staircase Test
+create cube 11 11 11 2 2 2 cube1
+create cube 9 9 9 2 2 2 cube2
+create cube 7 7 7 2 2 2 cube3
+create cube 5 5 5 2 2 2 cube4
+create cube 3 3 3 2 2 2 cube5
+create cube 1 1 1 2 2 2 cube6
+echo Done.

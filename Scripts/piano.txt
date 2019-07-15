@@ -1,0 +1,25 @@
+name-Piano Test
+create cube 0 0.5 0 0.5 0.5 0.5 pianocube1
+add_button pianocube1 play_sound piano/c1.wav
+color pianocube1 255 0 0 0
+create cube 0 0.5 0.5 0.5 0.5 0.5 pianocube2
+add_button pianocube2 play_sound piano/d1.wav
+color pianocube2 255 255 0 0
+create cube 0 0.5 1 0.5 0.5 0.5 pianocube3
+add_button pianocube3 play_sound piano/e1.wav
+color pianocube3 255 0 255 0
+create cube 0 0.5 1.5 0.5 0.5 0.5 pianocube4
+add_button pianocube4 play_sound piano/f1.wav
+color pianocube4 0 255 0 0
+create cube 0 0.5 2 0.5 0.5 0.5 pianocube5
+add_button pianocube5 play_sound piano/g1.wav
+color pianocube5 0 255 255 0
+create cube 0 0.5 2.5 0.5 0.5 0.5 pianocube6
+add_button pianocube6 play_sound piano/a1.wav
+color pianocube6 0 0 255 0
+create cube 0 0.5 3 0.5 0.5 0.5 pianocube7
+add_button pianocube7 play_sound piano/b1.wav
+color pianocube7 200 150 35 0
+create cube 0 0.5 3.5 0.5 0.5 0.5 pianocube8
+add_button pianocube8 play_sound piano/c2.wav
+color pianocube8 0 255 150 0

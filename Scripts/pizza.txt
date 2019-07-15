@@ -1,0 +1,4 @@
+name-Pizza
+create_raycast pizza/Pizza.obj 1 1 1 pizza 0
+add_button pizza run_local food/consume.txt
+add_comp pizza rigidbody

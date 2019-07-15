@@ -1,0 +1,2 @@
+play_sound nom.wav
+self_destruct

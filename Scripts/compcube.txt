@@ -1,0 +1,4 @@
+name-Companion Cube
+//create compcube/model.obj 0 10 0 1 1 1 compcube 0
+create_raycast compcube/model.obj 1 1 1 compcube 0
+add_comp compcube rigidbody

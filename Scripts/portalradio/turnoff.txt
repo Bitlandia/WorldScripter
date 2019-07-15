@@ -1,0 +1,2 @@
+del_sound_local
+change_button run_local portalradio/turnon.txt

@@ -1,0 +1,4 @@
+name-Portal Radio
+create_raycast portalradio/model.obj 1 1 1 portalradio 0
+add_comp portalradio rigidbody
+add_button portalradio run_local portalradio/turnon.txt
